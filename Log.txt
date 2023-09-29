@@ -1,47 +1,5 @@
 28/09/2023 05:15:50 - 
 28/09/2023 05:15:52 - 
 28/09/2023 17:17:04 - Object required
-28/09/2023 17:17:10 - Object required
-28/09/2023 17:17:15 - Object required
-28/09/2023 17:19:43 - Object required
-28/09/2023 17:20:03 - Object required
-28/09/2023 17:20:07 - Object required
-28/09/2023 17:20:10 - Object required
-28/09/2023 17:20:15 - Object required
-28/09/2023 17:20:37 - Object required
-28/09/2023 17:21:28 - Object required
-28/09/2023 17:22:02 - Object required
-28/09/2023 18:04:01 - Object variable or With block variable not set
-28/09/2023 18:04:05 - Object variable or With block variable not set
-28/09/2023 18:05:30 - Object required
-28/09/2023 18:05:38 - Object required
-28/09/2023 18:07:04 - Os argumentos são incorretos, estão fora do intervalo aceitável ou estão em conflito.
-28/09/2023 18:08:35 - Os argumentos são incorretos, estão fora do intervalo aceitável ou estão em conflito.
-28/09/2023 18:08:39 - Os argumentos são incorretos, estão fora do intervalo aceitável ou estão em conflito.
-28/09/2023 18:08:43 - Os argumentos são incorretos, estão fora do intervalo aceitável ou estão em conflito.
-28/09/2023 18:08:54 - Os argumentos são incorretos, estão fora do intervalo aceitável ou estão em conflito.
-28/09/2023 18:16:12 - Os argumentos são incorretos, estão fora do intervalo aceitável ou estão em conflito.
-28/09/2023 18:16:17 - Os argumentos são incorretos, estão fora do intervalo aceitável ou estão em conflito.
-28/09/2023 18:16:21 - Os argumentos são incorretos, estão fora do intervalo aceitável ou estão em conflito.
-28/09/2023 18:17:11 - Os argumentos são incorretos, estão fora do intervalo aceitável ou estão em conflito.
-28/09/2023 18:17:19 - Os argumentos são incorretos, estão fora do intervalo aceitável ou estão em conflito.
-28/09/2023 18:17:22 - Os argumentos são incorretos, estão fora do intervalo aceitável ou estão em conflito.
-28/09/2023 18:17:42 - Os argumentos são incorretos, estão fora do intervalo aceitável ou estão em conflito.
-28/09/2023 18:18:17 - Object required
-28/09/2023 18:18:20 - Object required
-28/09/2023 18:18:26 - Object required
-28/09/2023 18:18:28 - Object required
-28/09/2023 19:54:34 - Object variable or With block variable not set
-28/09/2023 19:54:38 - Object variable or With block variable not set
-28/09/2023 20:04:42 - 
-28/09/2023 20:04:44 - 
-28/09/2023 20:04:47 - 
-28/09/2023 20:04:49 - 
-28/09/2023 20:08:34 - 
-28/09/2023 20:08:51 - 
-28/09/2023 20:09:06 - 
-28/09/2023 20:09:10 - 
-28/09/2023 20:19:32 - Object variable or With block variable not set
-28/09/2023 20:19:38 - Object variable or With block variable not set
-28/09/2023 21:03:48 - Object variable or With block variable not set
-28/09/2023 21:04:31 - Object variable or With block variable not set
+
+

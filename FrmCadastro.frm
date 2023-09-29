@@ -20,28 +20,28 @@ Begin VB.Form FrmCadastro
       Begin VB.TextBox txtBoxEmail 
          Height          =   345
          Left            =   135
-         TabIndex        =   2
+         TabIndex        =   3
          Top             =   1590
          Width           =   4320
       End
       Begin VB.TextBox txtBoxNome 
          Height          =   345
          Left            =   135
-         TabIndex        =   0
+         TabIndex        =   1
          Top             =   420
          Width           =   4320
       End
       Begin VB.TextBox txtBoxSobrenome 
          Height          =   330
          Left            =   105
-         TabIndex        =   1
+         TabIndex        =   2
          Top             =   1035
          Width           =   4350
       End
       Begin VB.TextBox txtBoxTelefone 
          Height          =   345
          Left            =   105
-         TabIndex        =   3
+         TabIndex        =   4
          Top             =   2040
          Width           =   4380
       End
@@ -65,7 +65,7 @@ Begin VB.Form FrmCadastro
       Caption         =   "Adicionar"
       Height          =   450
       Left            =   2025
-      TabIndex        =   4
+      TabIndex        =   5
       Top             =   3915
       Width           =   3090
    End
@@ -142,7 +142,7 @@ Begin VB.Form FrmCadastro
       Width           =   780
    End
    Begin VB.Label lblTituloTela 
-      Caption         =   "Tela Cadastro"
+      Caption         =   "Cadastro"
       BeginProperty Font 
          Name            =   "Microsoft Sans Serif"
          Size            =   15
@@ -155,8 +155,8 @@ Begin VB.Form FrmCadastro
       Height          =   585
       Index           =   0
       Left            =   2655
-      TabIndex        =   5
-      Top             =   285
+      TabIndex        =   0
+      Top             =   315
       Width           =   2385
    End
 End
@@ -167,8 +167,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Private Sub btnAdicionar_Click()
 
-
- ' Validação do campo Nome
+   ' Validação do campo Nome
    Dim nome As String
    nome = Trim(txtBoxNome.Text)
    
@@ -192,13 +191,13 @@ Private Sub btnAdicionar_Click()
          If IsValidEmail(email) Then
             AdicionarContato
          Else
-            MsgBox "O email não é válido. Por favor, insira um email válido."
+            MensagemErro "O email não é válido. Por favor, insira um email válido.", "Email inválido"
          End If
       Else
-         MsgBox "O telefone deve ter 10 ou 11 caracteres, sendo apenas números."
+         MensagemErro "O telefone deve ter 10 ou 11 caracteres, sendo apenas números.", "Telefone inválido"
       End If
    Else
-      MsgBox "Por favor, preencha todos os campos obrigatórios."
+      MensagemErro "Por favor, preencha todos os campos obrigatórios.", "Campos não preenchidos"
    End If
    
 
@@ -243,8 +242,6 @@ Private Sub AdicionarContato()
    sobrenome = Trim(txtBoxSobrenome.Text)
    telefone = Trim(txtBoxTelefone.Text)
    
-   
-   
    conn.Conectar ' Conectando ao banco de dados
    
    ' Criando tabela caso ela não exista
@@ -261,27 +258,29 @@ Private Sub AdicionarContato()
     sql = "INSERT INTO Contato (nome, sobrenome, email, telefone) VALUES ('" & nome & "','" & sobrenome & "','" & email & "','" & telefone & "');"
     conn.ExecutarSQL sql
     
-    MsgBox "Contato adicionado com sucesso."
-       
+    MensagemSucesso "Contato adicionado com sucesso.", "Cadastro adicionado"
+    
+    RegistrarLog "Novo cliente cadastrado: " & nome & ""
+    
     conn.Desconectar 'Fechando conexão
     Exit Sub
 
 TratarErro:
-    MsgBox "Erro ao adicionar contato: " & Err.Description
-    RegistrarErro Err.Description
+    MensagemErro "Erro ao adicionar contato: " & Err.Description
+    RegistrarLog Err.Description
 
 End Sub
 
-Private Sub RegistrarErro(ByVal Mensagem As String)
+Private Sub RegistrarLog(ByVal mensagem As String)
 
     Dim fileName As String
-    Dim fileNumber As Integer
+    Dim fileNumber As Long
 
-    fileName = "C:\Users\Gabrielly Castro\Desktop\bkp projeto\VB6\Case\Log.txt" ' Substitua pelo caminho do seu arquivo de log
+    fileName = "C:\Users\Gabrielly Castro\Desktop\Desafio VB6\Log.txt" ' Substitua pelo caminho do seu arquivo de log
     fileNumber = FreeFile
 
     Open fileName For Append As fileNumber
-    Print #fileNumber, Now & " - " & Mensagem
+    Print #fileNumber, Now & " - " & mensagem
     Close fileNumber
     
 End Sub

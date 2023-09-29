@@ -13,7 +13,7 @@ Begin VB.Form FrmPesquisa
    ScaleMode       =   0  'User
    ScaleWidth      =   8145
    StartUpPosition =   2  'CenterScreen
-   Begin VB.PictureBox Picture1 
+   Begin VB.PictureBox picPesquisa 
       Height          =   525
       Left            =   5685
       Picture         =   "CadastroClientes.frx":0000
@@ -232,8 +232,8 @@ Private Sub FlexGridVisualizar_Click()
    Dim nome As String
    Dim sobrenome As String
    Dim sql As String
-   Dim clickedRow As Integer
-   Dim clickedCol As Integer
+   Dim clickedRow As Long
+   Dim clickedCol As Long
    
    Set DataGrid.DataSource = Nothing ' Limpando DataGrid
    
@@ -271,7 +271,7 @@ Private Sub FlexGridVisualizar_Click()
       ' Preenchendo DataGrid
       Set DataGrid.DataSource = Adodc
    Else
-        MsgBox "Clique em uma célula válida."
+        MensagemErro "Clique em uma célula válida."
    End If
    
 End Sub
@@ -291,8 +291,9 @@ Private Sub excluirContato(ByVal id As String)
    Exit Sub
 
 TratarErro:
-    MsgBox "Erro ao excluir contato: " & Err.Description
+    MensagemErro "Erro ao excluir contato: " & Err.Description
     RegistrarErro Err.Description
+    
 End Sub
 
 Private Sub CarregarLista()
@@ -308,6 +309,7 @@ Private Sub CarregarLista()
     sql = "SELECT nome, sobrenome FROM contato;"
     Dim result As ADODB.Recordset
     Set result = conn.GetRecordset(sql)
+    Dim colIndex As Long
 
     ' Preenchendo o FlexGridVisualizar com os resultados da consulta
     FlexGridVisualizar.Rows = 1
@@ -318,7 +320,6 @@ Private Sub CarregarLista()
 
     FlexGridVisualizar.TextMatrix(0, 0) = "Nome Completo" ' Adiciona cabeçalho de coluna ao FlexGridVisualizar
     
-    Dim colIndex As Integer
     colIndex = 0 ' Atribuindo coluna a 0 para começarmos da primeira coluna
 
     ' Preenchendo o FlexGridVisualizar com os resultados da consulta
@@ -336,28 +337,106 @@ Private Sub CarregarLista()
     Exit Sub
 
 TratarErro:
-   MsgBox "Erro ao carregar lista de contatos: " & Err.Description
+   MensagemErro "Erro ao carregar lista de contatos: " & Err.Description
    RegistrarErro Err.Description
    
 End Sub
 Private Sub btnExcluir_Click()
-ExcluirRegistro
+   ExcluirRegistro
+End Sub
+Private Sub RegistrarErro(ByVal mensagem As String)
+
+    Dim fileName As String
+    Dim fileNumber As Long
+
+    fileName = "C:\Users\Gabrielly Castro\Desktop\Desafio VB6\Log.txt"
+    fileNumber = FreeFile
+
+    Open fileName For Append As fileNumber
+    Print #fileNumber, Now & " - " & mensagem
+    Close fileNumber
+    
+End Sub
+Private Sub EditarRegistros()
+
+   Dim linha As Long
+   Dim coluna As Long
+   Dim dadosDoDataGrid As String
+   Dim totalDeColunas As Long
+   
+   If Adodc.Recordset.EOF Then
+      MensagemErro "O DataGrid está vazio."
+      Exit Sub
+   End If
+   
+   totalDeColunas = 5 ' Definindo quantidade de colunas
+
+   ' Pergunta ao usuário se ele deseja editar o cadastro
+   Dim resposta As VbMsgBoxResult
+   resposta = MsgBox("Tem certeza que deseja editar o cadastro?", vbQuestion + vbYesNo, "Edição de Cadastro")
+
+   If resposta = vbYes Then
+      Do While Not Adodc.Recordset.EOF
+         ' Loop para percorrer cada coluna
+         For coluna = 0 To totalDeColunas - 1
+            Dim valor As String
+            valor = Adodc.Recordset.Fields(coluna).Value ' Obter o valor da célula atual
+            dadosDoDataGrid = dadosDoDataGrid & valor & vbCrLf
+
+            ' Construindo o SQL
+            Dim sqlUpdate As String
+            sqlUpdate = "UPDATE contato SET "
+            sqlUpdate = sqlUpdate & "nome = '" & valor & "', "
+            sqlUpdate = sqlUpdate & "sobrenome = '" & valor & "', "
+            sqlUpdate = sqlUpdate & "email = '" & valor & "', "
+            sqlUpdate = sqlUpdate & "telefone = '" & valor & "';"
+            sqlUpdate = sqlUpdate & "WHERE id = " & idContato & ";"
+         Next coluna
+
+         Adodc.Recordset.MoveNext 'Executando o SQL e movendo para o próximo registro
+      Loop
+
+      If Not erro Then ' Se não houve erro durante a edição
+         MensagemSucesso "Cadastro editado com sucesso."
+      Else
+         MensagemErro "Erro ao editar cadastro."
+      End If
+   End If
+
+End Sub
+
+Private Sub ExcluirRegistro()
+
+   If Not Adodc.Recordset.EOF Then
+      Dim id As Long
+      id = Adodc.Recordset.Fields("id").Value ' Obtém o ID do registro selecionado no DataGrid
+      
+      ' Validação do usuário se ele deseja excluir o registro
+      Dim resposta As VbMsgBoxResult
+      resposta = MsgBox("Tem certeza que deseja excluir este registro?", vbQuestion + vbYesNo, "Exclusão de Cadastro")
+      
+      If resposta = vbYes Then
+         ' Chama a função para excluir o contato com base no ID
+         excluirContato id
+         
+         ' Atualiza o DataGrid após a exclusão
+         Adodc.Refresh
+      End If
+   Else
+      MensagemErro "Nenhum registro selecionado para exclusão."
+   End If
+
 End Sub
 
 
-
-Private Sub Form_Load()
-
-End Sub
-
-Private Sub Picture1_Click()
+Private Sub picPesquisa_Click()
+   Dim sql As String ' Criando vairavel da consulta sql
+      Dim pesquisa As String
 
    Set DataGrid.DataSource = Nothing ' Limpar o controle DataGrid
    
-   Dim pesquisa As String
    pesquisa = Trim(txtBoxPesquisa.Text) ' Atribuindo valor da txtBox a pesquisa
    
-   Dim sql As String ' Criando vairavel da consulta sql
    sql = "SELECT * FROM contato WHERE nome LIKE '%" & pesquisa & "%' OR sobrenome LIKE '%" & pesquisa & "%';"
    
    Adodc.RecordSource = sql ' Atribuindo consulta
@@ -365,85 +444,9 @@ Private Sub Picture1_Click()
    Adodc.Refresh ' Atualizando com informações da consulta
    
    If Adodc.Recordset.EOF Then ' Verifica se o Recordset está vazio
-      MsgBox "Contato não encontrado."
+      MensagemErro "Contato não encontrado."
       txtBoxPesquisa.Text = "" ' Limpa o campo de pesquisa
    Else
       Set DataGrid.DataSource = Adodc.Recordset ' Inserindo informações da busca
    End If
-   
 End Sub
-
-
-Private Sub RegistrarErro(ByVal Mensagem As String)
-
-    Dim fileName As String
-    Dim fileNumber As Integer
-
-    fileName = "C:\Users\Gabrielly Castro\Desktop\Desafio VB6\Log.txt"
-    fileNumber = FreeFile
-
-    Open fileName For Append As fileNumber
-    Print #fileNumber, Now & " - " & Mensagem
-    Close fileNumber
-    
-End Sub
-Private Sub EditarRegistros()
-
-   Dim linha As Integer
-   Dim coluna As Integer
-   Dim dadosDoDataGrid As String
-   
-   If Adodc.Recordset.EOF Then
-      MsgBox "O DataGrid está vazio."
-      Exit Sub
-   End If
-   
-   Dim totalDeColunas As Integer
-   totalDeColunas = 5 ' Definindo quantidade de colunas
-   
-   Do While Not Adodc.Recordset.EOF
-      ' Loop para percorrer cada coluna
-      For coluna = 0 To totalDeColunas - 1
-         Dim valor As String
-         valor = Adodc.Recordset.Fields(coluna).Value ' Obter o valor da célula atual
-         dadosDoDataGrid = dadosDoDataGrid & valor & vbCrLf
-      
-         ' Construindo o select
-         Dim sqlUpdate As String
-         sqlUpdate = "UPDATE contato SET "
-         sqlUpdate = sqlUpdate & "nome = '" & valor & "', "
-         sqlUpdate = sqlUpdate & "sobrenome = '" & valor & "', "
-         sqlUpdate = sqlUpdate & "email = '" & valor & "', "
-         sqlUpdate = sqlUpdate & "telefone = '" & valor & "';"
-         sqlUpdate = sqlUpdate & "WHERE id = " & idContato & ";"
-      Next coluna
-      
-      Adodc.Recordset.MoveNext 'Executando o SQL e movendo para o próximo registro
-   Loop
-
-    If Not erro Then ' Se não houve erro durante a edição
-      MsgBox "Cadastro editado com sucesso."
-   Else
-      MsgBox "Erro ao editar cadastro."
-   End If
-
-End Sub
-
-Private Sub ExcluirRegistro()
-
-  If Not Adodc.Recordset.EOF Then
-      Dim id As Integer
-      id = Adodc.Recordset.Fields("id").Value ' Obtém o ID do registro selecionado no DataGrid
-      
-      ' Chama a função para excluir o contato com base no ID
-      excluirContato id
-      
-      ' Atualiza o DataGrid após a exclusão
-      Adodc.Refresh
-   Else
-      MsgBox "Nenhum registro selecionado para exclusão."
-   End If
-   
-End Sub
-
-

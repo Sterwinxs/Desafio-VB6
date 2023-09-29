@@ -22,14 +22,14 @@ Begin VB.Form FrmCadastro
          Left            =   135
          TabIndex        =   2
          Top             =   1590
-         Width           =   4335
+         Width           =   4320
       End
       Begin VB.TextBox txtBoxNome 
          Height          =   345
          Left            =   135
          TabIndex        =   0
          Top             =   420
-         Width           =   4230
+         Width           =   4320
       End
       Begin VB.TextBox txtBoxSobrenome 
          Height          =   330
@@ -43,7 +43,7 @@ Begin VB.Form FrmCadastro
          Left            =   105
          TabIndex        =   3
          Top             =   2040
-         Width           =   4425
+         Width           =   4380
       End
    End
    Begin MSComDlg.CommonDialog CommonDialog1 
@@ -288,6 +288,3 @@ End Sub
 
 
 
-Private Sub Form_Load()
-
-End Sub
